@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Espermatogénesis</title>
+  <style>
+    body {
+      background-color: #FCF9EA;
+      color: #000;
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    min-height: auto; 
+      text-align: center;
+    }
+
+    .titulo-con-imagenes {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+
+    .titulo-con-imagenes img {
+      width: 120px;
+      height: auto;
+      border-radius: 12px;
+    }
+
+    h1 {
+      font-size: 2.2em;
+      color: #000;
+      margin: 10px 0;
+    }
+
+    h2, h3 {
+      margin: 5px 0;
+      color: ##000;
+    }
+
+    #info {
+      max-width: 800px;
+      width: 90%;
+      background: #F5D2D2;
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      margin-bottom: 20px;
+    }
+
+    p {
+      font-size: 1em;
+      text-align: justify;
+      margin: 10px 0;
+      color: #000;
+    }
+
+    button {
+      background-color: #FFBDBD;
+      color: #000;
+      border: none;
+      padding: 12px 25px;
+      font-size: 1.1em;
+      font-weight: bold;
+      border-radius: 25px;
+      cursor: pointer;
+      transition: 0.3s;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+      margin-top: 20px;
+    }
+
+    button:hover {
+      background-color: #2980b9;
+      transform: scale(1.05);
+    }
+
+    #ar-container {
+      width: 100%;
+      height: 500px;
+      display: none;
+    }
+
+    /* 🔘 Botón de salir anclado abajo a la derecha */
+    #exit-ar {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      z-index: 1000;
+      padding: 12px 18px;
+      background-color: rgba(0, 0, 0, 0.65);
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-size: 1em;
+      cursor: pointer;
+      backdrop-filter: blur(5px);
+      display: none;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+      transition: background-color 0.3s ease, transform 0.2s ease;
+    }
+
+    #exit-ar:hover {
+      background-color: rgba(255, 0, 0, 0.7);
+      transform: scale(1.05);
+    }
+
+    #exit-ar svg {
+      width: 18px;
+      height: 18px;
+      fill: white;
+    }
+  </style>
+
+  <!-- A-Frame y AR.js -->
+  <script src="https://aframe.io/releases/1.6.0/aframe.min.js"></script>
+  <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/aframe-extras@7.0.0/dist/aframe-extras.min.js"></script>
+</head>
+<body>
+
+  <!-- Sección principal -->
+  <div id="info">
+    <div class="titulo-con-imagenes">
+      <img src="imagenes/medicina logo.png" alt="Logo Medicina">
+      <h1>Espermatogénesis</h1>
+      <img src="imagenes/univesidad logo.png" alt="Logo Universidad">
+    </div>
+    <h2>Museo de Embriología</h2>
+    <h3>Universidad Autónoma de Chihuahua</h3>
+    <p>La embriología es el estudio del desarrollo de un embrión desde la fecundación del óvulo hasta la octava semana de gestación...</p>
+    <p>Con esta aplicación usted podrá obtener una experiencia de realidad aumentada donde podrá ver modelos 3D de la espermatogénesis.</p>
+  </div>
+
+  <button id="start-ar">Iniciar Realidad Aumentada</button>
+
+  <!-- 🔘 Botón con ícono de salida -->
+  <button id="exit-ar">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+      <path d="M18.3 5.71a1 1 0 0 0-1.42 0L12 10.59 7.11 5.7a1 1 0 0 0-1.42 1.42L10.59 12l-4.9 4.89a1 1 0 0 0 1.42 1.42L12 13.41l4.89 4.9a1 1 0 0 0 1.42-1.42L13.41 12l4.89-4.89a1 1 0 0 0 0-1.4z"/>
+    </svg>
+    Salir
+  </button>
+
+  <!-- Contenedor para la escena AR -->
+  <div id="ar-container"></div>
+
+  <script>
+    const startBtn = document.getElementById('start-ar');
+    const exitBtn = document.getElementById('exit-ar');
+    const info = document.getElementById('info');
+    const arContainer = document.getElementById('ar-container');
+
+    startBtn.addEventListener('click', () => {
+      info.style.display = 'none';
+      startBtn.style.display = 'none';
+      exitBtn.style.display = 'flex';
+      arContainer.style.display = 'block';
+
+      // Crear la escena AR
+      const scene = document.createElement('a-scene');
+      scene.setAttribute('embedded', '');
+      scene.setAttribute('arjs', '');
+
+      // Marcador 1 - testículo
+      const marker1 = document.createElement('a-marker');
+      marker1.setAttribute('preset', 'hiro');
+      const model1 = document.createElement('a-entity');
+      model1.setAttribute('gltf-model', 'models/embriologia/Testiculo45.glb');
+      model1.setAttribute('scale', '0.2 0.2 0.2');
+      model1.setAttribute('rotation', '-90 0 0');
+      marker1.appendChild(model1);
+      scene.appendChild(marker1);
+
+      // Marcador 2 - engranes
+      const marker2 = document.createElement('a-marker');
+      marker2.setAttribute('preset', 'kanji');
+      const model2 = document.createElement('a-entity');
+      model2.setAttribute('gltf-model', 'models/gears/gears.glb');
+      model2.setAttribute('scale', '0.1 0.1 0.1');
+      marker2.appendChild(model2);
+      scene.appendChild(marker2);
+
+      // Cámara
+      const camera = document.createElement('a-entity');
+      camera.setAttribute('camera', '');
+      scene.appendChild(camera);
+
+      arContainer.innerHTML = '';
+      arContainer.appendChild(scene);
+    });
+
+    exitBtn.addEventListener('click', () => {
+      arContainer.style.display = 'none';
+      arContainer.innerHTML = '';
+      info.style.display = 'block';
+      startBtn.style.display = 'inline-block';
+      exitBtn.style.display = 'none';
+
+      // Apagar cámara
+      const video = document.querySelector('video');
+      if (video && video.srcObject) {
+        const stream = video.srcObject;
+        const tracks = stream.getTracks();
+        tracks.forEach(track => track.stop());
+        video.srcObject = null;
+      }
+
+      // 🔄 Recargar para asegurar liberación de cámara
+      setTimeout(() => {
+        window.location.reload();
+      }, 300);
+    });
+  </script>
+
+</body>
+</html>
